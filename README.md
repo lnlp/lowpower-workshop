@@ -1,2 +1,2 @@
-# Low-power-workshop
-Low-power workshop
+# lowpower-workshop
+Low-power workshop.
