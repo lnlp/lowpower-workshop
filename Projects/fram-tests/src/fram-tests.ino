@@ -1,9 +1,24 @@
-/* Some basic tests for testing the FM24CL64B 64 kb (8 kB) Serial I2C FRAM module. 
- * Use with Electrodragon ESP-12E/F adapter board or NodeMCU board.
- * By Leonel Lopes Parente
+/* Below tests were used during the development of the FramI2C library.
+ *
+ * The tests assume to be run on an ESP8266 module
+ * with a (Flash) button connected to GPIO 0 and a
+ * bultin LED connected to GPIO2.
  * 
- * Uses LED on ESP-12 module which is connected to GPIO2.
- * Uses on-board flash button connected to GPIO0 to initiate test-runs.
+ * printf() is used because it is standard supported in
+ * the ESP8266 Arduino Core en easier to work with than print() and println().
+ * 
+ * The button is used for manually starting a test run.
+ * Test runs are not started automatically to prevent endless loops writing to FRAM memory.
+ * 
+ * See doTests() for selecting which of the available tests to run.
+ * 
+ * IMPORTANT:
+ * It is essential that the correct density of the FRAM chip
+ * is provided in the begin() method.
+ * When an incorrect size is specified FramI2C will assume a different FRAM chip 
+ * and work incorrectly (which may not directly be clear).
+ * 
+ * These tests will show all output on the Serial Monitor.
  */
 
 #include <ESP8266WiFi.h>
@@ -19,10 +34,10 @@ const uint8_t flashbuttonPin = 0; 	// Hard-wired
 volatile bool flashbuttonPressed = false;
 const uint8_t ledPin = 2; 			// Hard wired
 
-FramI2C fram1;
-FramI2C fram2;
+FramI2C fram;
+// FramI2C fram2;	// Used for testing multiple connected FRAM chips
 
-Led led(ledPin, Led::OffLevel::High);
+Led led(ledPin, Led::ActiveLevel::Low);
 
 Stream& stream = Serial;
 
@@ -526,29 +541,31 @@ void setup()
 
 	FramI2C::ResultCode resultcode;
 
+	// Some examples:
 	// resultcode = fram.begin(16);
 	// resultcode = fram.begin(64);
 	// resultcode = fram.begin(1024);
 	// resultcode = fram.begin(1024, 0x50, 0x4000);
 	// resultcode = fram.begin(1024, 0x50, 0x10001);  //This will fail at least because > pageSize
 
-	resultcode = fram1.begin(64);
+	resultcode = fram.begin(64);	// FRAM chip with 64kb density using default I2C address
 	if (resultcode != FramI2C::ResultCode::Success)
 	{
-		stream.println("fram1.begin() failed.");
+		stream.println("fram.begin() failed.");
 		printResultCodeDescription(stream, resultcode);
 		waitForever();   
 	}
-	printFramInfo(stream, fram1, "fram1");	
+	printFramInfo(stream, fram, "fram");	
 
-	resultcode = fram2.begin(1024, 0x52);
-	if (resultcode != FramI2C::ResultCode::Success)
-	{
-		stream.println("fram2.begin() failed.");
-		printResultCodeDescription(stream, resultcode);
-		waitForever();
-	}	
-	printFramInfo(stream, fram2, "fram2");
+	// Used for testing multiple connected FRAM chips:
+	// resultcode = fram2.begin(1024, 0x52);
+	// if (resultcode != FramI2C::ResultCode::Success)
+	// {
+	// 	stream.println("fram2.begin() failed.");
+	// 	printResultCodeDescription(stream, resultcode);
+	// 	waitForever();
+	// }	
+	// printFramInfo(stream, fram2, "fram2");
 
 	stream.println("Press Flash button to run the tests\n");	
 }
@@ -560,9 +577,8 @@ void loop()
 	{
 		flashbuttonPressed = false;  //We now handle it so clear flag
 		stream.println("Flashbutton pressed");
-		doTests(fram1, "fram1");
-		doTests(fram2, "fram2");
+		doTests(fram, "fram");
+		// doTests(fram2, "fram2");	// Used for testing multiple connected FRAM chips.
 		stream.println("\n--- Test(s) completed ---\n\nPress Flash button to repeat the tests\n");
-		// stream.flush();
 	}
 }
