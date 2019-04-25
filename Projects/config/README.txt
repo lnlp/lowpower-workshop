@@ -1,11 +1,13 @@
 ### IMPORTANT ###:
 
-This folder contains examples configuration files used to access
-your Wireless network and your MQTT server.
+This folder contains examples of configuration files used to access
+your Wireless network and MQTT server.
 
-DON'T ENTER ANY (SENSITIVE) CONFIGURATION DATA INSIDE THIS DIRECTORY!!!
+DO NOT ENTER ANY (SENSITIVE) CONFIGURATION DATA INSIDE THIS DIRECTORY!!!
 
-Instead copy the files elsewhere where they are excluded from source control and will not be automatically published on to the internet!
-Only add the required configuration parameters in the files at that safe(r) location.
+Instead copy the files to another (safe) location on your computer where they are excluded from source control 
+to prevent them from being pushed to the Internet where they will be publicly available.
+(The "example_" prefix should of course be removed.)
 
-Then adjusts the paths to these files in any source code where relevant.
+Only add the required configuration parameters in the files at that safe location.
+(In projects using these configuration files, the paths will have to be adjusted.)
