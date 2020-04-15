@@ -1,7 +1,6 @@
-# lowpower-workshop
-This repository contains material used for the Low-power workshop 
-held at The Things Network / IoT Groningen meetups.
+# Low-power with ESP8266 workshop
 
-The workshop was held in Dutch therefore some parts of the material are in the Dutch language.
+This repository contains material for the Low-power with ESP8266 workshop.
+This workshop was held during The Things Network / IoT Groningen meetups.
 
-Included software projects use the PlatformIO IDE and Arduino framework.
+Included software projects use the Arduino framework and PlatformIO.
